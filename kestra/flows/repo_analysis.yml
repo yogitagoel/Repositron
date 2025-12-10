@@ -1,5 +1,5 @@
 id: repo_analysis
-namespace: onboardzero
+namespace: repositron
 
 inputs:
   - id: repo_url

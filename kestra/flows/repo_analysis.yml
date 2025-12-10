@@ -1,0 +1,72 @@
+id: repo_analysis
+namespace: onboardzero
+
+inputs:
+  - id: repo_url
+    type: STRING
+    description: "GitHub repository URL to analyze"
+
+tasks:
+  - id: workdir
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone_repo
+        type: io.kestra.plugin.git.Clone
+        url: "{{ inputs.repo_url }}"
+        directory: repo
+
+      - id: analyze_repo
+        type: io.kestra.plugin.scripts.python.Commands
+        taskRunner:
+          type: io.kestra.plugin.scripts.runner.docker.Docker
+        containerImage: python:3.11-slim
+        warningOnStdErr: false
+        beforeCommands:
+          - pip install --upgrade pip > /dev/null
+        commands:
+          - python kestra/scripts/analyze_repo.py
+        outputFiles:
+          - out/repo_summary.json
+
+      - id: summarize_repo
+        type: io.kestra.plugin.ai.agent.AIAgent
+        provider: openai            # or together, etc. – configure according to your account
+        model: gpt-4o-mini          # change to your actual model
+        apiKey: "{{ secret('OPENAI_API_KEY') }}"
+        systemPrompt: |
+          You are a senior software engineer and onboarding expert.
+          You receive a JSON describing a Git repository's structure and tech stack.
+          Your job is to generate a clear, concise onboarding-focused summary.
+
+          Rules:
+          - Do NOT hallucinate files or frameworks that are not present.
+          - Be honest when something is unknown.
+          - Output STRICTLY valid JSON, nothing else.
+        prompt: |
+          Here is the repository metadata (JSON):
+
+          {{ outputs.analyze_repo.outputFiles["out/repo_summary.json"] | readFile }}
+
+          Return JSON with the following fields:
+          {
+            "architecture": "string - high-level description of the app architecture",
+            "stack": "string - main tech stack in one sentence",
+            "key_files": [
+              "relative/path/to/important/file1",
+              "relative/path/to/important/file2"
+            ],
+            "api_routes": [
+              "GET /api/example",
+              "POST /api/other"
+            ],
+            "notes": "string - any useful notes for a new developer"
+          }
+
+      - id: log_summary
+        type: io.kestra.plugin.core.log.Log
+        message: "{{ outputs.summarize_repo.choices[0].message.content }}"
+
+outputs:
+  - id: repo_insights
+    type: JSON
+    value: "{{ outputs.summarize_repo.choices[0].message.content }}"

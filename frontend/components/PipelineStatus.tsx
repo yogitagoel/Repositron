@@ -22,26 +22,38 @@ const analyzeAndSetupSteps = [
 
 export default function PipelineStatus({
   mode,
+  runId,
   onComplete,
 }: {
   mode: "analyze" | "analyze-setup";
+  runId: string;
   onComplete: () => void;
-}) {
+})
+{
   const steps =
     mode === "analyze" ? analyzeOnlySteps : analyzeAndSetupSteps;
 
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
-    if (currentStep < steps.length) {
-      const timer = setTimeout(() => {
-        setCurrentStep((prev) => prev + 1);
-      }, 1200);
-      return () => clearTimeout(timer);
-    } else {
+  const interval = setInterval(async () => {
+    const res = await fetch(`/api/pipeline/status?runId=${runId}`);
+    const data = await res.json();
+
+    if (data.status === "completed") {
       onComplete();
+      clearInterval(interval);
+      return;
     }
-  }, [currentStep, steps.length, onComplete]);
+
+    if (data.currentStep !== undefined) {
+      setCurrentStep(data.currentStep);
+    }
+  }, 2000);
+
+  return () => clearInterval(interval);
+}, [runId, onComplete]);
+
 
   return (
     <div className="mt-8 w-full max-w-md bg-gray-900 border border-gray-700 rounded-lg p-4">
@@ -51,27 +63,31 @@ export default function PipelineStatus({
           : "Analysis + Setup Pipeline"}
       </h2>
 
-      <ul className="space-y-2 text-sm">
-        {steps.map((step, index) => {
-          let icon = "○";
-          let color = "text-gray-500";
+      <ul className="space-y-3 text-sm">
+  {steps.map((step, index) => {
+    const isDone = index < currentStep;
+    const isActive = index === currentStep;
 
-          if (index < currentStep) {
-            icon = "✔";
-            color = "text-green-400";
-          } else if (index === currentStep) {
-            icon = "⟳";
-            color = "text-yellow-400";
-          }
+    return (
+      <li
+        key={step}
+        className={`flex items-center gap-3 ${
+          isDone
+            ? "text-green-400"
+            : isActive
+            ? "text-blue-400 animate-pulse"
+            : "text-gray-500"
+        }`}
+      >
+        <span className="text-lg">
+          {isDone ? "✔" : isActive ? "⟳" : "○"}
+        </span>
+        <span>{step}</span>
+      </li>
+    );
+  })}
+</ul>
 
-          return (
-            <li key={step} className={`flex gap-2 ${color}`}>
-              <span>{icon}</span>
-              <span>{step}</span>
-            </li>
-          );
-        })}
-      </ul>
     </div>
   );
 }

@@ -1,10 +1,7 @@
-const { exec } = require("child_process");
-
 function execCline(prompt, cwd) {
   return new Promise((resolve) => {
     console.log("\n🧠 Cline:\n", prompt);
 
-    // Mock: simulate successful command execution
     const mockOutput = "Command executed successfully.";
     console.log(mockOutput);
     resolve(mockOutput);

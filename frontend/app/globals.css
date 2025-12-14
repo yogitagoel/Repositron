@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* DO NOT set background on body or html */
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -24,3 +27,66 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* @keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 300% 300%;
+  animation: gradientFlow 14s ease-in-out infinite;
+} */
+
+@keyframes waveMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-wave {
+  background-size: 300% 300%;
+  animation: waveMove 14s ease-in-out infinite;
+}
+
+@keyframes waveMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ===== 3D UI EFFECT ===== */
+.ui-3d {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ui-3d:hover {
+  transform: translateY(-2px);
+}
+
+.ui-3d:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+
+
+

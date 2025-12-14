@@ -28,22 +28,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* @keyframes gradientFlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
 
-.animate-gradient {
-  background-size: 300% 300%;
-  animation: gradientFlow 14s ease-in-out infinite;
-} */
 
 @keyframes waveMove {
   0% {
@@ -87,6 +72,32 @@ body {
   transform: translateY(0px) scale(0.98);
 }
 
+/* ===== GRID BACKGROUND ===== */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.25; /* 🔑 VERY IMPORTANT */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ===== SOFT CENTER GLOW ===== */
+.grid-glow {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 60% 40%,
+      rgba(168, 85, 247, 0.18),
+      transparent 60%
+    );
+  z-index: 0;
+  pointer-events: none;
+}
 
 
 

@@ -39,11 +39,15 @@ export default function Home() {
     localStorage.setItem("pipelineState", "running");
 
     try {
-      await fetch("https://repositron.onrender.com/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ repoUrl }),
-      });
+      await fetch("/api/pipeline/start", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    repoUrl,
+    mode: "analyze-setup"
+  })
+});
+
     } catch (err) {
       console.error("Pipeline start failed", err);
     }

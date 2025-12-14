@@ -27,7 +27,7 @@ export default function SummaryPage() {
   useEffect(() => {
     const fetchRepoSummary = async () => {
       try {
-        const response = await fetch("/api/repo/summary");
+        const response = await fetch("https://repositron-backend.onrender.com/api/repo/summary");
         if (!response.ok) {
           throw new Error("Failed to fetch repository summary");
         }

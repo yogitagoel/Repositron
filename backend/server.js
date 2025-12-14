@@ -9,7 +9,7 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(cors({https://repositronfrontend.vercel.app/}));
 app.use(express.json());
 
 // Store active runs

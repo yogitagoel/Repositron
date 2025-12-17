@@ -39,7 +39,7 @@ export default function Home() {
     localStorage.setItem("pipelineState", "running");
 
     try {
-      await await fetch("https://repositron.onrender.com/api/pipeline/start", {
+      await fetch("https://repositron.onrender.com/api/pipeline/start", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
